@@ -115,6 +115,7 @@ public class ListActivity extends Activity
             card.addImage(BitmapFactory.decodeByteArray(imgArray,0,imgArray.length));
             card.setText(names.get(i));
             img.add(card);
+            menuAdapterList.notifyDataSetChanged();
 
         }catch (FileNotFoundException ex) {
         } catch (IOException ex) {
