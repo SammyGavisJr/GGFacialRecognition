@@ -156,8 +156,8 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if (position == 1) {
-            //        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            //        startActivityForResult(speechIntent,2);
+                    Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                   startActivityForResult(speechIntent,2);
                     String name = "image_" + String.valueOf(imageFileNO) + ".jpg";
                     File imageFile = new File(path, name);
                     imageFileNO++;
