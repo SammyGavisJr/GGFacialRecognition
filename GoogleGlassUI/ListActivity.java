@@ -39,12 +39,22 @@ public class ListActivity extends Activity
     private CardScrollView mCardScroller;
     File databaseFile;
     ArrayList<CardBuilder> cardList = new ArrayList<CardBuilder>();
+    boolean list=true;
     protected void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
        databaseFile = this.getApplicationContext().getDatabasePath("androidsqlite_4.db");
         ArrayList<CardBuilder> imgCards = new ArrayList<CardBuilder>();
-        getListImages(imgCards);
+        Bundle bool = new Bundle();
+        bool = getIntent().getExtras();
+        list = bool.getBoolean("list");
+        if(list) {
+            getListImages(imgCards);
+        }
+        else if(!list){
+          String query =  bool.getString("query");
+            getMatch(imgCards,query);
+        }
 
         menuAdapterList = new MenuAdapterList(imgCards);
 
@@ -115,13 +125,31 @@ public class ListActivity extends Activity
             card.addImage(BitmapFactory.decodeByteArray(imgArray,0,imgArray.length));
             card.setText(names.get(i));
             img.add(card);
-            menuAdapterList.notifyDataSetChanged();
+        //    menuAdapterList.notifyDataSetChanged();
 
         }catch (FileNotFoundException ex) {
         } catch (IOException ex) {
         }
     }
 
+    }
+    private void getMatch(ArrayList<CardBuilder> img,String name)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(databaseFile.toString(),null,1);
+        String query = "SELECT * FROM placeFaces WHERE name="+name;
+        Cursor cursor = db.rawQuery(query,null);
+        try{
+        byte [] imgArray = getByteArray(cursor.getString(cursor.getColumnIndex("myFace")));
+            String match = cursor.getString(cursor.getColumnIndex("name"));
+            CardBuilder card = new CardBuilder(this,CardBuilder.Layout.COLUMNS);
+            card.addImage(BitmapFactory.decodeByteArray(imgArray,0,imgArray.length));
+            card.setText(match);
+            img.add(card);
+            menuAdapterList.notifyDataSetChanged();
+
+    }catch (FileNotFoundException ex) {
+} catch (IOException ex) {
+}
     }
     private byte[] getByteArray(String filePath) throws FileNotFoundException, IOException {
 
